@@ -325,28 +325,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     public void sendLongSMS() {
 
-        /*if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-
-            if (checkSelfPermission(Manifest.permission.SEND_SMS)
-                    == PackageManager.PERMISSION_DENIED) {
-
-                Log.d("permission", "permission denied to SEND_SMS - requesting it");
-                String[] permissions = {Manifest.permission.SEND_SMS};
-
-                requestPermissions(permissions, PERMISSION_REQUEST_CODE);
-
-            }
-        }*/
-
         ActivityCompat.requestPermissions(getActivity(),new String[]{Manifest.permission.SEND_SMS},1);
 
         String phoneNumber = pref.getString(Constants.Author1,"");
         String phoneNumber2 = pref.getString(Constants.Author2,"");
         String phoneNumber3 = pref.getString(Constants.Author3,"");
 
-        String MessageLocation = "Latitude: "+latitude + "Logitude: "+logitude + "Address: "+ address
-                + "City: "+ city + "Postal Code: "+ postalCode + "Country: "+ country + "Known As: " + knownName;
-        String message = "I am in Trouble...!!! My Location is ";
+        String MessageLocation = "Latitude: "+latitude + " Logitude: "+logitude + " Address: "+ address
+                + " City: "+ city + " Postal Code: "+ postalCode + " Country: "+ country + " Known As: " + knownName;
+        String message = "I am in on Ragging...!!! My Location is ";
         SmsManager smsManager = SmsManager.getDefault();
         ArrayList<String> parts = smsManager.divideMessage(message + MessageLocation);
         smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
