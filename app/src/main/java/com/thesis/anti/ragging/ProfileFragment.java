@@ -233,7 +233,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         String MessageLocation = " Latitude: "+latitude + " Logitude: "+logitude + " Address: "+ address
                 + " City: "+ city + " Postal Code: "+ postalCode + " Country: "+ country + " Known As: " + knownName;
-        String message = "I am in on Ragging...!!! My Location is ";
+        String message = "I am in Ragging...!!! My Location is ";
         SmsManager smsManager = SmsManager.getDefault();
         ArrayList<String> parts = smsManager.divideMessage(message + MessageLocation);
         smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
