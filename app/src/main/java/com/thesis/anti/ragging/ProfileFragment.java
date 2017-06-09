@@ -54,9 +54,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    AlertDialog alertDialog1;
-    CharSequence[] values = {" First Author Number "," Second Author Number "," Third Author Number "};
-
     private TextView tv_name,tv_email,tv_message,tv_message_auhtor;
     private SharedPreferences pref;
     private AppCompatButton btn_change_password,btn_logout,btn_trouble ,btn_map;
@@ -66,8 +63,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     double lat ;
     double lan ;
-
-    LatLng lata;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLocation;
@@ -98,23 +93,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 return false;
             }
         } );
-
-
-       /* Fragment fragment = new ProfileFragment();
-        fragment.getView().setOnKeyListener( new View.OnKeyListener()
-        {
-            @Override
-            public boolean onKey( View v, int keyCode, KeyEvent event )
-            {
-                if( keyCode == KeyEvent.KEYCODE_VOLUME_DOWN )
-                {
-                    Toast.makeText(getActivity(),"new new 2",Toast.LENGTH_LONG).show();
-                    return true;
-                }
-                return false;
-            }
-        } );*/
-
 
         Button newPage = (Button)view.findViewById(R.id.btn_location);
         newPage.setOnClickListener(new View.OnClickListener() {
@@ -153,41 +131,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     }
 
-    public void CreateAlertDialogWithRadioButtonGroup(){
-
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        builder.setTitle("Select Your Choice");
-
-        builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int item) {
-
-                switch(item)
-                {
-                    case 0:
-
-                        showDialogAuthor();
-                        Toast.makeText(getActivity(), "First Item Clicked", Toast.LENGTH_LONG).show();
-
-                        break;
-                    case 1:
-
-                        Toast.makeText(getActivity(), "Second Item Clicked", Toast.LENGTH_LONG).show();
-                        break;
-                    case 2:
-
-                        Toast.makeText(getActivity(), "Third Item Clicked", Toast.LENGTH_LONG).show();
-                        break;
-                }
-                alertDialog1.dismiss();
-            }
-        });
-        alertDialog1 = builder.create();
-        alertDialog1.show();
-
-    }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
 
@@ -196,7 +139,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         //tv_email.setText(pref.getString(Constants.UNIQUE_ID,""));
         tv_email.setText("Author 1: " + pref.getString(Constants.Author1,"") + "\n" +
                         "Author 2: " +pref.getString(Constants.Author2,"") +"\n" + "Author 3: " + pref.getString(Constants.Author3,""));
-
 
     }
 
@@ -259,48 +201,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             });
     }
 
-    private void showDialogAuthor(){
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        View view = inflater.inflate(R.layout.dialog_change_author, null);
-        edt_author = (EditText)view.findViewById(R.id.et_author_number);
-        tv_message_auhtor = (TextView)view.findViewById(R.id.tv_message_auhtor);
-        progress = (ProgressBar)view.findViewById(R.id.progress);
-        builder.setView(view);
-        builder.setTitle("Change Author Number");
-        builder.setPositiveButton("Change ", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog = builder.create();
-        dialog.show();
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    String auhtorChange = edt_author.getText().toString();
-                    if(!auhtorChange.isEmpty()){
-
-                        progress.setVisibility(View.VISIBLE);
-                        changeAuthor(pref.getString(Constants.EMAIL,""),auhtorChange);
-
-                    }else {
-
-                        tv_message_auhtor.setVisibility(View.VISIBLE);
-                        tv_message_auhtor.setText("Fields are empty");
-                    }
-                }
-            });
-    }
-
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -331,7 +231,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         String phoneNumber2 = pref.getString(Constants.Author2,"");
         String phoneNumber3 = pref.getString(Constants.Author3,"");
 
-        String MessageLocation = "Latitude: "+latitude + " Logitude: "+logitude + " Address: "+ address
+        String MessageLocation = " Latitude: "+latitude + " Logitude: "+logitude + " Address: "+ address
                 + " City: "+ city + " Postal Code: "+ postalCode + " Country: "+ country + " Known As: " + knownName;
         String message = "I am in on Ragging...!!! My Location is ";
         SmsManager smsManager = SmsManager.getDefault();
@@ -339,6 +239,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         smsManager.sendMultipartTextMessage(phoneNumber, null, parts, null, null);
         smsManager.sendMultipartTextMessage(phoneNumber2, null, parts, null, null);
         smsManager.sendMultipartTextMessage(phoneNumber3, null, parts, null, null);
+
     }
 
     private void logout() {
@@ -408,53 +309,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         });
     }
 
-    private void changeAuthor(String email, String author){
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(Constants.BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        RequestInterface requestInterface = retrofit.create(RequestInterface.class);
-
-        User user = new User();
-        user.setEmail(email);
-        user.setNew_author1(author);
-        ServerRequest request = new ServerRequest();
-        request.setOperation(Constants.CHANGE_AUTHOR_OPERATION);
-        request.setUser(user);
-        Call<ServerResponse> response = requestInterface.operation(request);
-
-        response.enqueue(new Callback<ServerResponse>() {
-            @Override
-            public void onResponse(Call<ServerResponse> call, retrofit2.Response<ServerResponse> response) {
-
-                ServerResponse resp = response.body();
-                if(resp.getResult().equals(Constants.SUCCESS)){
-                    progress.setVisibility(View.GONE);
-                    tv_message_auhtor.setVisibility(View.GONE);
-                    dialog.dismiss();
-                    Snackbar.make(getView(), resp.getMessage(), Snackbar.LENGTH_LONG).show();
-
-                }else {
-                    progress.setVisibility(View.GONE);
-                    tv_message_auhtor.setVisibility(View.VISIBLE);
-                    tv_message_auhtor.setText( "on response"+resp.getMessage() );
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
-
-                Log.d(Constants.TAG,"failed");
-                progress.setVisibility(View.GONE);
-                tv_message_auhtor.setVisibility(View.VISIBLE);
-                tv_message_auhtor.setText("on failur" + t.getLocalizedMessage());
-
-            }
-        });
-    }
 
     @Override
     public void onConnected(Bundle bundle) {
@@ -556,39 +410,48 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     public void trouble(){
         //Toast.makeText( getActivity(),lat,Toast.LENGTH_LONG).show();
 
+        Toast.makeText(getActivity(),Double.toString(lat),Toast.LENGTH_LONG).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.app_name));
-        builder.setMessage(getString(R.string.action_settings));
+        builder.setMessage("Are you Sure that you are in trouble..");
 
-        String positiveText = getString(android.R.string.ok);
+        String positiveText = "Yes";
         builder.setPositiveButton(positiveText,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // positive button logic
 
-                        Geocoder geocoder;
-                        List<Address> addresses;
-                        geocoder = new Geocoder(getActivity(), Locale.getDefault());
+                        if(lat == 0.0 && lan == 0.0){
+                            Toast.makeText(getActivity(),"1st time please click on Location button and check your GPS to " +
+                                    "retrive your position",Toast.LENGTH_LONG).show();
 
-                        try {
-                            addresses = geocoder.getFromLocation(lat, lan, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+                        } else {
+                            //Toast.makeText(getActivity(),"paichi",Toast.LENGTH_LONG).show();
+                            Geocoder geocoder;
+                            List<Address> addresses;
+                            geocoder = new Geocoder(getActivity(), Locale.getDefault());
 
-                            latitude = Double.toString(lat);
-                            logitude = Double.toString(lan);
+                            try {
+                                addresses = geocoder.getFromLocation(lat, lan, 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
 
-                            address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-                            city = addresses.get(0).getLocality();
-                            state = addresses.get(0).getAdminArea();
-                            country = addresses.get(0).getCountryName();
-                            postalCode = addresses.get(0).getPostalCode();
-                            knownName = addresses.get(0).getFeatureName();
-                            //tv_name.setText(address + " "+ state + " " + country +" "+ city +" "+ knownName + postalCode);
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                                latitude = Double.toString(lat);
+                                logitude = Double.toString(lan);
+
+                                address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                                city = addresses.get(0).getLocality();
+                                state = addresses.get(0).getAdminArea();
+                                country = addresses.get(0).getCountryName();
+                                postalCode = addresses.get(0).getPostalCode();
+                                knownName = addresses.get(0).getFeatureName();
+                                //Toast.makeText(getActivity(),"paichi 2",Toast.LENGTH_LONG).show();
+                                //tv_name.setText(address + " "+ state + " " + country +" "+ city +" "+ knownName + postalCode);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            Toast.makeText(getActivity(),address,Toast.LENGTH_LONG).show();
+                            //sendLongSMS();
                         }
-                        Toast.makeText(getActivity(),"paichi" +latitude +address,Toast.LENGTH_LONG).show();
-                        //sendLongSMS();
                     }
                 });
 
