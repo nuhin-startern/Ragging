@@ -84,6 +84,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     }
     private void loginProcess(String email,String password){
 
+      /*  SharedPreferences.Editor editor = pref.edit();
+        editor.putBoolean(Constants.IS_LOGGED_IN,true);
+        editor.apply();
+        goToProfile();*/
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -147,7 +152,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         main.flag_fragment = "4";
         Fragment profile = new ProfileFragment();
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_frame,profile);
+        ft.replace(R.id.fragment_frame,profile,"TAG");
         ft.commit();
     }
 }
