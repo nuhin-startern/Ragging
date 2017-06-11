@@ -244,7 +244,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         smsManager.sendMultipartTextMessage(phoneNumber3, null, parts, null, null);
 
     }
-
+    //Logout
     private void logout() {
         SharedPreferences.Editor editor = pref.edit();
         editor.putBoolean(Constants.IS_LOGGED_IN,false);
@@ -254,7 +254,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         editor.apply();
         goToLogin();
     }
-
+    //LogIn
     private void goToLogin(){
 
         Fragment login = new LoginFragment();
