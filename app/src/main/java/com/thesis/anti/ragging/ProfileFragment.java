@@ -94,6 +94,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             }
         } );
 
+        //Map button
+
         Button newPage = (Button)view.findViewById(R.id.btn_location);
         newPage.setOnClickListener(new View.OnClickListener() {
 
@@ -142,6 +144,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     }
 
+    //Initial View
     private void initViews(View view){
 
         tv_name = (TextView)view.findViewById(R.id.tv_name);
